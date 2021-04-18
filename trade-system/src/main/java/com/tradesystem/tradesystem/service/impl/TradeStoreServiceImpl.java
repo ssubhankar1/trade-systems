@@ -6,8 +6,11 @@ import com.tradesystem.tradesystem.model.TradeStoreDTO;
 import com.tradesystem.tradesystem.persistence.entity.TradeStore;
 import com.tradesystem.tradesystem.persistence.repository.TradeStoreRepository;
 import com.tradesystem.tradesystem.service.TradeStoreService;
+import com.tradesystem.tradesystem.util.CustomForEach;
+import com.tradesystem.tradesystem.util.TradeSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
 public class TradeStoreServiceImpl implements TradeStoreService {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static Logger logger = LoggerFactory.getLogger(TradeStoreService.class);
 
     @Autowired
     private TradeStoreRepository tradeStoreRepository;
@@ -31,18 +35,24 @@ public class TradeStoreServiceImpl implements TradeStoreService {
         //List<TradeStore> tradeStores = tradeStoreRepository.findAll();
         Iterable<TradeStore> iterable = tradeStoreRepository.findAll();
         List<TradeStoreDTO> tradeStoreDTOList = new ArrayList<>();
-        for (TradeStore tradeStore : iterable){
-            TradeStoreDTO tradeStoreDTO = new TradeStoreDTO();
-            tradeStoreDTO.setTradeId(tradeStore.getTradeId());
-            tradeStoreDTO.setBookingId(tradeStore.getBookingId());
-            tradeStoreDTO.setCounterPartyId(tradeStore.getCounterPartyId());
-            tradeStoreDTO.setVersion(tradeStore.getVersion());
-            tradeStoreDTO.setExpiredFlag(tradeStore.getExpiredFlag());
-            //tradeStoreDTO.setCreatedDate();
-            //tradeStoreDTO.setMaturityDate();
-            tradeStoreDTOList.add(tradeStoreDTO);
-        }
+        iterable.forEach(tradeStore->setTradeStore(tradeStoreDTOList,tradeStore));
         return tradeStoreDTOList;
+    }
+
+    private void setTradeStore(List<TradeStoreDTO> tradeStoreDTOList,TradeStore tradeStore){
+
+        TradeStoreDTO tradeStoreDTO = new TradeStoreDTO();
+        BeanUtils.copyProperties(tradeStore,tradeStoreDTO);
+        //tradeStoreDTOList.add(tradeStoreDTO);
+        /*TradeStoreDTO tradeStoreDTO = new TradeStoreDTO();
+        tradeStoreDTO.setTradeId(tradeStore.getTradeId());
+        tradeStoreDTO.setBookingId(tradeStore.getBookingId());
+        tradeStoreDTO.setCounterPartyId(tradeStore.getCounterPartyId());
+        tradeStoreDTO.setVersion(tradeStore.getVersion());
+        tradeStoreDTO.setExpiredFlag(tradeStore.getExpiredFlag());*/
+        //tradeStoreDTO.setCreatedDate();
+        //tradeStoreDTO.setMaturityDate();
+        tradeStoreDTOList.add(tradeStoreDTO);
     }
 
 
@@ -64,7 +74,7 @@ public class TradeStoreServiceImpl implements TradeStoreService {
 
             tradeStoreRepository.save(createTradeStore(tradeStoreDTO));
         }catch (Exception ex){
-            ex.printStackTrace();
+            throw new TradeSystemException(ErrorConstants.error_code_4);
         }
     }
 
@@ -97,6 +107,17 @@ public class TradeStoreServiceImpl implements TradeStoreService {
         boolean validateVersionFailed = false;
         try{
             Iterable<TradeStore> iterable = tradeStoreRepository.findAll();
+            //List<String> result = IterableUtils.toList(iterable);
+            //List<String> result = Lists.newArrayList(iterable);
+            /*Stream initialStream = StreamSupport.stream(iterable.spliterator(), false);
+            CustomForEach.forEach(initialStream, (elem, breaker) -> {
+                TradeStore tradeStore  = (TradeStore) elem;
+                if (tradeId.equals(tradeStore.getTradeId()) && version<tradeStore.getVersion()){
+                    //validateVersionFailed = true;
+                    breaker.stop();
+                }
+            });*/
+
             for (TradeStore tradeStore : iterable){
                 if(tradeId.equals(tradeStore.getTradeId()) && version<tradeStore.getVersion()){
                     validateVersionFailed = true;
