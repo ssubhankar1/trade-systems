@@ -1,6 +1,7 @@
 package com.tradesystem.tradesystem.controller;
 
 import com.tradesystem.tradesystem.exception.TradeSystemException;
+import com.tradesystem.tradesystem.model.ErrorConstants;
 import com.tradesystem.tradesystem.model.TradeStoreDTO;
 import com.tradesystem.tradesystem.service.TradeStoreService;
 import org.slf4j.Logger;
@@ -31,10 +32,16 @@ public class TradeStoreController {
         return null;
     }
 
-    @GetMapping("/getTradeStoreInformation")
+    @GetMapping(value = "/getTradeStoreInformation",
+                produces = "application/json")
     public List<TradeStoreDTO> getAllTradeStoreInformation(){
-
-        return tradeStoreService.getAllTradeStoreInformation();
+        List<TradeStoreDTO> tradeStoreInformation = null;
+        try{
+            tradeStoreInformation= tradeStoreService.getAllTradeStoreInformation();
+        }catch(TradeSystemException exception){
+            logger.error("Exception = "+exception);
+        }
+        return tradeStoreInformation;
     }
 
     @PostMapping("/saveTrade")

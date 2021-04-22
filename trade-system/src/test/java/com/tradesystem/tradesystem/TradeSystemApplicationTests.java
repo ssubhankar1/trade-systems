@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 class TradeSystemApplicationTests {
@@ -45,6 +46,40 @@ class TradeSystemApplicationTests {
 		TradeStoreDTO tradeStoreDTO =
 				tradeStoreController.checkAndupdateMaturedTradesToExpired(createTradeStoreForExpiredTrades());
 		assert(tradeStoreDTO.getErrorDetails()==null);
+	}
+
+	@Test
+	public void makeSuccessfulTrade(){// process to update Expired Flag as Y if trade crosses maturity date
+		TradeStoreDTO tradeStoreDTO =
+				tradeStoreController.saveTradeStoreInformation(createTradeStoreSuccessfully());
+		assert(tradeStoreDTO.getErrorDetails()==null);
+	}
+
+	@Test
+	public void getAllTradeInformation(){// test to retrieve all trade information
+		List<TradeStoreDTO> tradeStoreInformation =
+				tradeStoreController.getAllTradeStoreInformation();
+		assert(tradeStoreInformation.size()>0);
+	}
+
+
+
+	private TradeStoreDTO createTradeStoreSuccessfully() {
+
+		TradeStoreDTO tradeStoreDTO = new TradeStoreDTO();
+		tradeStoreDTO.setTradeId("T5");
+		tradeStoreDTO.setBookingId("B5");
+		tradeStoreDTO.setVersion(1);
+		tradeStoreDTO.setCounterPartyId("Cp-4");
+		tradeStoreDTO.setCreatedDate(new Date());
+		Date dt = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(dt);
+		c.add(Calendar.DATE, 2);
+		dt = c.getTime();
+		tradeStoreDTO.setMaturityDate(dt);
+		tradeStoreDTO.setExpiredFlag("N");
+		return tradeStoreDTO;
 	}
 
 	private TradeStoreDTO createTradeStoreForExpiredTrades() {

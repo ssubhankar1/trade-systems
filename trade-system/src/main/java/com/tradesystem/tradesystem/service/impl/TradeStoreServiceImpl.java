@@ -32,10 +32,13 @@ public class TradeStoreServiceImpl implements TradeStoreService {
 
     @Override
     public List<TradeStoreDTO> getAllTradeStoreInformation() {
-        //List<TradeStore> tradeStores = tradeStoreRepository.findAll();
-        Iterable<TradeStore> iterable = tradeStoreRepository.findAll();
         List<TradeStoreDTO> tradeStoreDTOList = new ArrayList<>();
-        iterable.forEach(tradeStore->setTradeStore(tradeStoreDTOList,tradeStore));
+        try{
+            Iterable<TradeStore> iterable = tradeStoreRepository.findAll();
+            iterable.forEach(tradeStore->setTradeStore(tradeStoreDTOList,tradeStore));
+        }catch(Exception exception){
+            throw new TradeSystemException(ErrorConstants.error_code_5);
+        }
         return tradeStoreDTOList;
     }
 
@@ -43,35 +46,14 @@ public class TradeStoreServiceImpl implements TradeStoreService {
 
         TradeStoreDTO tradeStoreDTO = new TradeStoreDTO();
         BeanUtils.copyProperties(tradeStore,tradeStoreDTO);
-        //tradeStoreDTOList.add(tradeStoreDTO);
-        /*TradeStoreDTO tradeStoreDTO = new TradeStoreDTO();
-        tradeStoreDTO.setTradeId(tradeStore.getTradeId());
-        tradeStoreDTO.setBookingId(tradeStore.getBookingId());
-        tradeStoreDTO.setCounterPartyId(tradeStore.getCounterPartyId());
-        tradeStoreDTO.setVersion(tradeStore.getVersion());
-        tradeStoreDTO.setExpiredFlag(tradeStore.getExpiredFlag());*/
-        //tradeStoreDTO.setCreatedDate();
-        //tradeStoreDTO.setMaturityDate();
         tradeStoreDTOList.add(tradeStoreDTO);
     }
-
-
 
     @Override
     @Transactional
     public void saveTrade(TradeStoreDTO tradeStoreDTO) {
         logger.info("Inside save Trade");
         try{
-            /*boolean validateVersionFailed = validateVersion(tradeStoreDTO.getVersion(),
-                    tradeStoreDTO.getTradeId());
-            logger.info("validateVersioFailed ===" +validateVersionFailed);
-            if (!validateVersionFailed)
-                throw new TradeSystemException("Lower Version already exist for same TradeId");
-
-            if (validateMaturiyDate(tradeStoreDTO.getMaturityDate()))
-                throw new TradeSystemException(
-                        "Maturity Date is older than current date,trade cannot be processed");*/
-
             tradeStoreRepository.save(createTradeStore(tradeStoreDTO));
         }catch (Exception ex){
             throw new TradeSystemException(ErrorConstants.error_code_4);
@@ -107,17 +89,6 @@ public class TradeStoreServiceImpl implements TradeStoreService {
         boolean validateVersionFailed = false;
         try{
             Iterable<TradeStore> iterable = tradeStoreRepository.findAll();
-            //List<String> result = IterableUtils.toList(iterable);
-            //List<String> result = Lists.newArrayList(iterable);
-            /*Stream initialStream = StreamSupport.stream(iterable.spliterator(), false);
-            CustomForEach.forEach(initialStream, (elem, breaker) -> {
-                TradeStore tradeStore  = (TradeStore) elem;
-                if (tradeId.equals(tradeStore.getTradeId()) && version<tradeStore.getVersion()){
-                    //validateVersionFailed = true;
-                    breaker.stop();
-                }
-            });*/
-
             for (TradeStore tradeStore : iterable){
                 if(tradeId.equals(tradeStore.getTradeId()) && version<tradeStore.getVersion()){
                     validateVersionFailed = true;
