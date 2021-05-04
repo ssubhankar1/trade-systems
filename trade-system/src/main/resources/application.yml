@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: trade-systems
+
+#eureka:
+ # client:
+  #  serviceUrl:
+   #   defaultZone: http://localhost:8083/eureka
+    #register-with-eureka: true
+    #fetch-registry: true
+    #healthcheck:
+     # enabled: true
+  # preferIpAddress: true
+
+server.port: 8088
+
