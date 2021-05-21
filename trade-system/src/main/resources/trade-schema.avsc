@@ -1,0 +1,35 @@
+{
+    "type": "record",
+    "name": "TradeStore",
+    "namespace": "com.tradesystems.feeder.schema",
+    "fields": [
+    {
+        "name": "tradeId",
+        "type": "string"
+    },
+    {
+        "name": "counterPartyId",
+        "type": "string"
+    },
+    {
+        "name": "version",
+        "type": "int"
+    },
+    {
+        "name": "bookingId",
+        "type": "string"
+    },
+    {
+        "name": "expiredFlag",
+        "type": "string"
+    },{
+            "name": "maturityDate",
+            "type": "int",
+            "logicalType": "date"
+      },
+      {
+              "name": "createdDate",
+              "type": "int",
+              "logicalType": "date"
+      }]
+}

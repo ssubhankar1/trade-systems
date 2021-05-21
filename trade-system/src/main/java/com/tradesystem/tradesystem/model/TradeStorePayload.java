@@ -1,10 +1,6 @@
 package com.tradesystem.tradesystem.model;
 
-
-import java.io.Serializable;
-import java.util.Date;
-
-public class TradeStoreDTO implements Serializable {
+public class TradeStorePayload {
 
     private String tradeId;
 
@@ -16,38 +12,21 @@ public class TradeStoreDTO implements Serializable {
 
     private String expiredFlag;
 
-    private Date maturityDate;
+    private Integer maturityDate;
 
-    private Date createdDate;
+    private Integer createdDate;
 
-    private String errorDetails;
-
-    private Integer creatingDateInt;
-
-    private Integer maturityDateInt;
-
-    public Integer getCreatingDateInt() {
-        return creatingDateInt;
-    }
-
-    public void setCreatingDateInt(Integer creatingDateInt) {
-        this.creatingDateInt = creatingDateInt;
-    }
-
-    public Integer getMaturityDateInt() {
-        return maturityDateInt;
-    }
-
-    public void setMaturityDateInt(Integer maturityDateInt) {
-        this.maturityDateInt = maturityDateInt;
-    }
-
-    public String getErrorDetails() {
-        return errorDetails;
-    }
-
-    public void setErrorDetails(String errorDetails) {
-        this.errorDetails = errorDetails;
+    @Override
+    public String toString() {
+        return "TradeStorePayload{" +
+                "tradeId='" + tradeId + '\'' +
+                ", counterPartyId='" + counterPartyId + '\'' +
+                ", version=" + version +
+                ", bookingId='" + bookingId + '\'' +
+                ", expiredFlag='" + expiredFlag + '\'' +
+                ", maturityDate=" + maturityDate +
+                ", createdDate=" + createdDate +
+                '}';
     }
 
     public String getTradeId() {
@@ -90,19 +69,19 @@ public class TradeStoreDTO implements Serializable {
         this.expiredFlag = expiredFlag;
     }
 
-    public Date getMaturityDate() {
+    public Integer getMaturityDate() {
         return maturityDate;
     }
 
-    public void setMaturityDate(Date maturityDate) {
+    public void setMaturityDate(Integer maturityDate) {
         this.maturityDate = maturityDate;
     }
 
-    public Date getCreatedDate() {
+    public Integer getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(Integer createdDate) {
         this.createdDate = createdDate;
     }
 }
